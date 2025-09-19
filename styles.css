@@ -1,0 +1,187 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    background-color: #1a4444;
+    color: #ffffff;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#terminal {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1a4444;
+}
+
+#output {
+    flex: 1;
+    padding: 8px;
+    white-space: pre-line;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #ffffff;
+}
+
+#input-line {
+    display: flex;
+    align-items: center;
+    background-color: #1a4444;
+    padding: 4px 8px;
+}
+
+#output::-webkit-scrollbar {
+    width: 6px;
+}
+
+#output::-webkit-scrollbar-track {
+    background: #144040;
+}
+
+#output::-webkit-scrollbar-thumb {
+    background: #ffffff;
+}
+
+#prompt {
+    color: #ffffff;
+    font-weight: bold;
+    margin-right: 2px;
+}
+
+#command-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    outline: none;
+    padding: 0;
+}
+
+#command-input::placeholder {
+    color: #888;
+}
+
+/* Animation for blinking cursor */
+.cursor {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Special formatting for different types of output */
+.error {
+    color: #ff4444;
+}
+
+.warning {
+    color: #ffaa00;
+}
+
+.success {
+    color: #44ff44;
+}
+
+.highlight {
+    color: #ffffff;
+    background-color: #004400;
+}
+
+.header-text {
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.flight-info {
+    color: #ffffff;
+}
+
+.price-info {
+    color: #ffff00;
+}
+
+.pnr-element {
+    color: #00ff88;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    body {
+        font-size: 11px;
+    }
+    
+    #output {
+        font-size: 10px;
+    }
+    
+    .header-info {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 10px;
+    }
+    
+    #output {
+        font-size: 9px;
+        padding: 5px;
+    }
+    
+    #status-bar {
+        flex-direction: column;
+        gap: 2px;
+    }
+}
+
+/* Special styles for different command outputs */
+.availability-table {
+    color: #ffffff;
+    margin: 10px 0;
+}
+
+.fare-display {
+    color: #ffff00;
+    margin: 5px 0;
+}
+
+.pnr-display {
+    color: #00ff88;
+    margin: 5px 0;
+}
+
+.queue-display {
+    color: #00ffff;
+    margin: 5px 0;
+}
+
+.help-text {
+    color: #aaaaaa;
+    margin: 5px 0;
+}
+
+/* Simulate real terminal appearance */
+#screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(transparent 50%, rgba(0, 255, 0, 0.03) 50%);
+    background-size: 100% 2px;
+    pointer-events: none;
+}
