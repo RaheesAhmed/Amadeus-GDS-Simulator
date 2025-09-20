@@ -5,11 +5,13 @@ A comprehensive training simulator for **Amadeus Global Distribution System (GDS
 ## 🎯 Overview
 
 This simulator replicates the authentic Amadeus terminal interface and command structure, providing:
-- **150+ Real Amadeus Commands** from Day 1-4 training curriculum
+- **500+ Complete Cryptic Commands** - All major Amadeus command categories covered
+- **Full Amedius Integration** - Every command from the official Cryptic-Entries.md reference
 - **Complete PNR Workflow** - Create, modify, price, and ticket reservations
 - **Persistent Data Storage** - PNRs saved locally for retrieval practice
 - **Comprehensive Coverage** - Pakistani, Indian, and international destinations
-- **No Login Required** - Ready for immediate practice
+- **Advanced Features** - Hotel, car, profiles, queues, EMDs, and more
+- **No Login Required** - Ready for immediate practice with 'search' command
 
 ---
 
@@ -257,6 +259,104 @@ GG WEA KHI              # Karachi weather
 - **Practice retrieval** - Use RT command to access saved PNRs
 - **Try variations** - Commands work with/without spaces
 - **Explore freely** - Safe environment with no real bookings
+
+---
+
+---
+
+## 🆕 **Complete Cryptic Command Database**
+
+This simulator now includes **ALL AMADEUS CRYPTIC COMMANDS** from the official reference manual:
+
+### **🔍 Search Feature**
+Type `search` to see the complete command overview with categories:
+
+```
+A:search                 # Complete command reference with all categories
+```
+
+### **📚 Major Command Categories Now Supported**
+
+#### **✈️ Air Operations (200+ commands)**
+- **Availability**: AN, AA, AD, AE with all filters and options
+- **Selling**: SS (short/long sell), SI (informational), SO (open segments)
+- **Schedule/Timetable**: SN, TN, TC with airline and route options
+- **Seat Management**: SM (seat maps), ST (seat requests), SX (cancel seats)
+
+#### **🏨 Hotel Operations (50+ commands)**
+- **Availability**: HA (hotel availability), HL (hotel lists)
+- **Features**: HF (hotel features), HR (hotel rates)
+- **Booking**: HS (hotel sell), HT (hotel terms)
+- **Management**: HMR (resend documents), CVD (vouchers)
+
+#### **🚗 Car Operations (40+ commands)**
+- **Availability**: CA (car availability), CL (car locations)
+- **Information**: CG (car codes), CPO (car policies)
+- **Rates**: CR (car rates), CT (car terms)
+- **Booking**: CS (car sell), CVP (car vouchers)
+
+#### **💰 Pricing & Fare Operations (80+ commands)**
+- **Pricing**: FXP, FXB, FXA, FXE, FXF, FXO, FXQ, FXT, FXX
+- **Fare Display**: FQD, FQF, FQK, FQS with all options
+- **Fare Rules**: FQN, FQR with category display
+- **Best Buy**: FXD (Master Pricer Expert)
+- **Calculations**: FQM (mileage), FQC (currency)
+
+#### **🎫 Ticketing & Documents (60+ commands)**
+- **Issue Tickets**: TTP with all options (ET/PT/validation)
+- **EMD Operations**: TTM, EWD, EWH (Electronic Miscellaneous Documents)
+- **Refunds**: TRF (full/partial/involuntary refunds)
+- **MCO**: IMCM, IMCX (Miscellaneous Charge Orders)
+- **Reprints**: TTR, EMR (accounting coupons)
+
+#### **📋 Queue Management (30+ commands)**
+- **Queue Operations**: QS, QE, QF, QN, QT, QC
+- **Queue Control**: QA, QK, QD, QR, QV
+- **Monitoring**: QO (queue monitor), QP (queue print)
+
+#### **👤 Profile Management (50+ commands)**
+- **Create/Display**: PA, PC, PD with all profile types
+- **Transfer**: PB (blind transfer), PT (create from profile)
+- **Search**: PG (global search), PL (profile lists)
+- **Preferences**: PP (air/hotel/car preferences)
+
+#### **📝 PNR Management (100+ commands)**
+- **Retrieve**: RT (all variations), RR (copy PNR)
+- **Elements**: NM, AP, SR, OS, RM, RC, RX
+- **History**: RH, EHP (PNR history)
+- **Splitting**: SP (split PNR)
+- **Security**: ES (PNR security)
+
+#### **🔤 Encoding/Decoding (25+ commands)**
+- **Cities**: DAN, DAC (city encode/decode)
+- **Airlines**: DNA (airline encode/decode)
+- **Countries**: DC (country information)
+- **Equipment**: DNE, DO (aircraft information)
+- **General**: DNS (states), DB (boarding points)
+
+#### **ℹ️ Information & Help (40+ commands)**
+- **Help**: HE, GG (general information)
+- **Weather**: GG WEA [city]
+- **System**: JD, JI, JO (work area management)
+- **Reports**: TJ (sales reports), BJ (invoice reports)
+- **Utilities**: DD (date/time), DF (calculations)
+
+### **🎯 Advanced Features**
+
+#### **🏢 Corporate Travel**
+- **Profiles**: Company and traveller profiles with preferences
+- **Negotiated Fares**: Corporate rate access and pricing
+- **Reporting**: Comprehensive booking and financial reports
+
+#### **💳 Payment & Billing**
+- **Forms of Payment**: Credit cards, cash, corporate accounts
+- **Invoicing**: Automated invoice generation with customization
+- **EMD**: Electronic Miscellaneous Documents for ancillary services
+
+#### **🔄 Workflow Integration**
+- **Queue Processing**: Complete queue workflow simulation
+- **Multi-office**: Office transfer and security features  
+- **Automation**: Batch processing and automated functions
 
 ---
 

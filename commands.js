@@ -1,5 +1,6 @@
 // Amadeus GDS Simulator - Commands Module
 // Handles all command processing and responses
+// Enhanced with complete Amadeus cryptic command database
 
 const COMMANDS = {
     // Current system state
@@ -13,16 +14,17 @@ const COMMANDS = {
         currentQueue: null
     },
 
-    // Command processor
+    // Enhanced command processor with complete cryptic database integration
     process: function(input) {
         const cmd = input.trim().toUpperCase();
         if (!cmd) return '';
 
-        // Parse the command
-        const parts = cmd.split(/[\s\/]+/);
-        const mainCmd = parts[0];
+        // Special search command
+        if (cmd === 'SEARCH') {
+            return this.handleSearchCommand();
+        }
 
-        // Route to appropriate handler
+        // Enhanced routing for all Amadeus cryptic commands
         if (this.isSignInCommand(cmd)) {
             return this.handleSignIn(cmd);
         } else if (this.isWorkAreaCommand(cmd)) {
@@ -45,13 +47,75 @@ const COMMANDS = {
             return this.handleEncoding(cmd);
         } else if (this.isHotelCommand(cmd)) {
             return this.handleHotel(cmd);
+        } else if (this.isCarCommand(cmd)) {
+            return this.handleCar(cmd);
         } else if (this.isScrollCommand(cmd)) {
             return this.handleScroll(cmd);
         } else if (this.isGeneralCommand(cmd)) {
             return this.handleGeneral(cmd);
+        } else if (this.isDateTimeCommand(cmd)) {
+            return this.handleDateTime(cmd);
+        } else if (this.isProfileCommand(cmd)) {
+            return this.handleProfile(cmd);
+        } else if (this.isRemarkCommand(cmd)) {
+            return this.handleRemark(cmd);
+        } else if (this.isTimetableCommand(cmd)) {
+            return this.handleTimetable(cmd);
+        } else if (this.isItineraryCommand(cmd)) {
+            return this.handleItinerary(cmd);
+        } else if (this.isInsuranceCommand(cmd)) {
+            return this.handleInsurance(cmd);
+        } else if (this.isEMDCommand(cmd)) {
+            return this.handleEMD(cmd);
+        } else if (this.isMiscCommand(cmd)) {
+            return this.handleMisc(cmd);
         } else {
             return this.handleUnrecognized(cmd);
         }
+    },
+
+    // Search command handler
+    handleSearchCommand: function() {
+        return `AMADEUS CRYPTIC COMMAND SEARCH
+
+COMMON COMMAND CATEGORIES:
+
+PNR MANAGEMENT:
+RT - Retrieve PNR          ER - End & redisplay
+ET - End & transmit        IG - Ignore changes
+XE - Cancel element        DL - Delete element
+
+AVAILABILITY & SELLING:
+AN - Air availability      SN - Schedule display
+SS - Sell segment          SR - Special requests
+SM - Seat map              ST - Seat request
+
+PRICING & TICKETING:
+FXP - Price itinerary      FQD - Display fares
+TTP - Issue ticket         TTM - Issue MCO/EMD
+TQT - Display TST          FP - Form of payment
+
+CONTACT & REMARKS:
+NM - Name element          AP - Phone contact
+RM - General remark        RC - Confidential remark
+OS - OSI element           AB - Billing address
+
+QUEUES & SYSTEM:
+QT - Queue totals          QS - Start queue
+QE - Place on queue        QF - Exit queue
+JI - Sign in              JO - Sign out
+
+ENCODING/DECODING:
+DC - Country/city codes    DAN - City encoding
+DAC - City decoding        DNA - Airline codes
+DNS - State codes          DD - Date/time
+
+HOTEL & CAR:
+HA - Hotel availability    HL - Hotel list
+CA - Car availability      CL - Car location
+
+Type 'HE [command]' for specific help
+Type 'GG [topic]' for general information`;
     },
 
     // Command type checkers
@@ -105,6 +169,43 @@ const COMMANDS = {
 
     isGeneralCommand: function(cmd) {
         return /^NM/.test(cmd) || /^AP/.test(cmd) || /^SR/.test(cmd) || /^RM/.test(cmd) || /^OS/.test(cmd) || /^OSI/.test(cmd) || /^TK/.test(cmd) || /^FFN/.test(cmd) || /^TN/.test(cmd) || /^SN/.test(cmd) || /^SM/.test(cmd);
+    },
+
+    // Additional command type checkers for comprehensive coverage
+    isCarCommand: function(cmd) {
+        return /^C[AGLRST]/.test(cmd) || /^CR/.test(cmd);
+    },
+
+    isDateTimeCommand: function(cmd) {
+        return /^DD/.test(cmd) || /^DE/.test(cmd) || /^DF/.test(cmd) || /^DM/.test(cmd) || /^DO/.test(cmd);
+    },
+
+    isProfileCommand: function(cmd) {
+        return /^P[ABCDEFGHIJKLMNOPQRSTUVWXYZ]/.test(cmd);
+    },
+
+    isRemarkCommand: function(cmd) {
+        return /^R[CMX]/.test(cmd) || /^AB/.test(cmd) || /^AM/.test(cmd) || /^AI/.test(cmd);
+    },
+
+    isTimetableCommand: function(cmd) {
+        return /^T[CNAE]/.test(cmd) || /^S[NADEQ]/.test(cmd);
+    },
+
+    isItineraryCommand: function(cmd) {
+        return /^I[BDEFGHIJKLMNOPQRSTUVWXYZ]/.test(cmd);
+    },
+
+    isInsuranceCommand: function(cmd) {
+        return /^I[SLVP]/.test(cmd);
+    },
+
+    isEMDCommand: function(cmd) {
+        return /^E[MW]/.test(cmd) || /^TTM/.test(cmd);
+    },
+
+    isMiscCommand: function(cmd) {
+        return /^[BFGLMWZ]/.test(cmd) || /^U/.test(cmd) || /^V/.test(cmd);
     },
 
     // Sign-in/out handlers
@@ -231,17 +332,17 @@ const COMMANDS = {
         return 'INVALID PNR COMMAND';
     },
 
-    // Availability handlers
+    // Availability handlers - Enhanced to match authentic Amadeus format
     handleAvailability: function(cmd) {
         if (!this.state.signedIn) {
             return 'SIGN-IN REQUIRED';
         }
 
-        // Parse availability command: AN20NOVDELBOM or similar
-        const match = cmd.match(/^A[NDA](\d{1,2})(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)([A-Z]{3})([A-Z]{3})(\d{4})?/);
+        // Parse availability command: AN25DECDXBLON or similar
+        const match = cmd.match(/^A[NDA](\d{1,2})(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)([A-Z]{3})([A-Z]{3})(?:\/([A-Z]+))?(\d{4})?/);
         
         if (match) {
-            const [, day, month, origin, destination, time] = match;
+            const [, day, month, origin, destination, airline, time] = match;
             const date = day + month;
             const departureTime = time || '0000';
 
@@ -250,28 +351,105 @@ const COMMANDS = {
                 return 'INVALID CITY CODE';
             }
 
-            const flights = DATA.flights.generateFlights(origin, destination, date);
+            const flights = this.generateAmadeusFlights(origin, destination, date);
             this.state.lastAvailability = { origin, destination, date, flights };
 
-            let result = `${cmd}\n`;
+            // Generate authentic Amadeus availability display
+            let result = `${origin}${day}${month}${destination}/${airline || 'AEK'}\n\n`;
+            result += `**  AMADEUS  AVAILABILITY  - ${cmd.substring(0,2)}  **  ${origin}  ${DATA.cities[origin]}\n`;
             result += `${date} ${DATA.cities[origin]} TO ${DATA.cities[destination]}\n\n`;
             
-            flights.forEach(flight => {
-                result += `${flight.line.toString().padStart(2)} `;
-                result += `${flight.airline}${flight.flight.toString().padStart(3)} `;
-                result += `${flight.class} `;
-                result += `${flight.date} `;
-                result += `${flight.route} `;
-                result += `${flight.dep.substring(0,2)}${flight.dep.substring(2)} `;
-                result += `${flight.arr.substring(0,2)}${flight.arr.substring(2)} `;
-                result += `${flight.aircraft} `;
-                result += `${flight.avail}\n`;
+            flights.forEach((flight, index) => {
+                const lineNum = (index + 1).toString();
+                
+                // Generate class availability codes (authentic Amadeus pattern)
+                const classAvail = this.generateClassAvailability();
+                
+                // Format times properly
+                const depTime = flight.dep;
+                const arrTime = flight.arr;
+                
+                // Equipment code
+                const equipCode = this.getEquipmentCode(flight.aircraft);
+                
+                // Duration
+                const duration = this.calculateFlightDuration(flight.dep, flight.arr);
+                
+                // First line - flight info with detailed class availability
+                result += `${lineNum.padStart(2)}  ${flight.airline} ${flight.flight.toString().padStart(3,'0')}  ${classAvail.line1} ${flight.route}  ${depTime}  ${arrTime} ${equipCode}  ${duration}\n`;
+                
+                // Second line - additional class availability with proper spacing
+                result += `     ${classAvail.line2}\n`;
             });
 
             return result;
         }
 
         return 'INVALID AVAILABILITY FORMAT';
+    },
+
+    // Generate Amadeus-style flights with realistic data
+    generateAmadeusFlights: function(origin, destination, date) {
+        // Use the enhanced flight generation from DATA module
+        return DATA.flights.generateFlights(origin, destination, date);
+    },
+
+
+    // Generate authentic class availability display
+    generateClassAvailability: function() {
+        const classes1 = ['D4', 'C4', 'I4', 'O7', 'H7', 'Y7', 'R7'];
+        const classes2 = ['X7', 'M7', 'B7', 'U7', 'K7', 'Q7', 'L7', 'T7', 'V7'];
+        
+        // Randomize availability numbers
+        const line1 = classes1.map(cls => {
+            const letter = cls[0];
+            const avail = Math.floor(Math.random() * 9) + 1;
+            return letter + avail;
+        }).join(' ');
+        
+        const line2 = classes2.map(cls => {
+            const letter = cls[0];
+            const avail = Math.floor(Math.random() * 9) + 1;
+            return letter + avail;
+        }).join(' ');
+        
+        return {
+            line1: line1,
+            line2: '     ' + line2  // Proper indentation
+        };
+    },
+
+    // Get equipment code in Amadeus format
+    getEquipmentCode: function(aircraftType) {
+        const equipmentCodes = {
+            'A320': 'E0/388',
+            'A321': 'E0/388',
+            'A330': 'E0/388',
+            'A340': 'E0/388',
+            'A350': 'E0/388',
+            'A380': 'E0/388',
+            'B737': 'E0/388',
+            'B738': 'E0/388',
+            'B777': 'E0/77W',
+            'B787': 'E0/388',
+            '747': 'E0/388',
+            'E90': 'E0/388'
+        };
+        return equipmentCodes[aircraftType] || 'E0/388';
+    },
+
+    // Calculate flight duration
+    calculateFlightDuration: function(depTime, arrTime) {
+        const depMinutes = parseInt(depTime.substring(0,2)) * 60 + parseInt(depTime.substring(2));
+        const arrMinutes = parseInt(arrTime.substring(0,2)) * 60 + parseInt(arrTime.substring(2));
+        
+        let duration = arrMinutes - depMinutes;
+        if (duration < 0) duration += 24 * 60; // Handle overnight flights
+        
+        const hours = Math.floor(duration / 60);
+        const minutes = duration % 60;
+        
+        return `${hours}:${minutes.toString().padStart(2, '0')}`;
     },
 
     // Sell handlers
@@ -354,8 +532,8 @@ const COMMANDS = {
             return 'SIGN-IN REQUIRED';
         }
 
-        // NM command: NM1SMITH/JOHN MR
-        const nmMatch = cmd.match(/^NM(\d+)([A-Z\/\s\(\)]+)$/);
+        // NM command: NM1SMITH/JOHN MR, NM1HUSSAIN/NASEER MSTR(CHD/12JAN15), NM1HUSSAIN/M MRS(INF/NABIL/18MAY08)
+        const nmMatch = cmd.match(/^NM(\d+)(.+)$/);
         if (nmMatch) {
             const [, count, nameString] = nmMatch;
             
@@ -363,13 +541,58 @@ const COMMANDS = {
                 return 'NO PNR IN WORK AREA';
             }
 
+            // Parse different name formats
+            let passengerName = nameString.trim();
+            let passengerType = 'ADT';
+            let infantName = '';
+            let dateOfBirth = '';
+
+            // Check for child with DOB: (CHD/12JAN15)
+            const chdMatch = passengerName.match(/\(CHD\/(\d{1,2}[A-Z]{3}\d{2})\)/);
+            if (chdMatch) {
+                passengerType = 'CHD';
+                dateOfBirth = chdMatch[1];
+                passengerName = passengerName.replace(/\(CHD\/\d{1,2}[A-Z]{3}\d{2}\)/, '').trim();
+            }
+
+            // Check for infant: (INF/NABIL) or (INF/NABIL/18MAY08)
+            const infMatch = passengerName.match(/\(INF\/([A-Z]+)(?:\/(\d{1,2}[A-Z]{3}\d{2}))?\)/);
+            if (infMatch) {
+                passengerType = 'INF';
+                infantName = infMatch[1];
+                if (infMatch[2]) {
+                    dateOfBirth = infMatch[2];
+                }
+                passengerName = passengerName.replace(/\(INF\/[A-Z]+(?:\/\d{1,2}[A-Z]{3}\d{2})?\)/, '').trim();
+            }
+
+            // Check for infant with seat: (INS)
+            if (passengerName.includes('(INS)')) {
+                passengerType = 'INS';
+                passengerName = passengerName.replace(/\(INS\)/, '').trim();
+            }
+
             const passenger = {
-                name: nameString.trim(),
-                type: nameString.includes('(CHD') ? 'CHD' : nameString.includes('(INF') ? 'INF' : 'ADT'
+                name: passengerName,
+                type: passengerType,
+                dateOfBirth: dateOfBirth,
+                infantName: infantName
             };
 
             this.state.currentPNR.passengers.push(passenger);
-            return 'NAME ELEMENT ADDED - ' + passenger.name;
+
+            let response = `NAME ELEMENT ADDED - ${passenger.name}`;
+            if (passengerType === 'CHD' && dateOfBirth) {
+                response += ` (CHILD - DOB: ${dateOfBirth})`;
+            } else if (passengerType === 'INF' && infantName) {
+                response += ` (INFANT: ${infantName}`;
+                if (dateOfBirth) response += ` - DOB: ${dateOfBirth}`;
+                response += ')';
+            } else if (passengerType === 'INS') {
+                response += ' (INFANT WITH SEAT)';
+            }
+
+            return response;
         }
 
         // AP command: AP 91-11-12345678-TRAVEL AGENCY
@@ -870,6 +1093,276 @@ const COMMANDS = {
         return 'INVALID HOTEL COMMAND';
     },
 
+    // Car command handlers
+    handleCar: function(cmd) {
+        if (!this.state.signedIn) {
+            return 'SIGN-IN REQUIRED';
+        }
+
+        // CA - Car Availability
+        if (cmd.startsWith('CA')) {
+            const match = cmd.match(/^CA([A-Z]{3})\d{1,2}(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)/);
+            if (match) {
+                const [, location, month] = match;
+                return `CAR AVAILABILITY - ${location}\n\n1. HERTZ ECONOMY     - USD 45.00\n2. AVIS COMPACT      - USD 52.00\n3. BUDGET FULL SIZE  - USD 68.00\n4. ENTERPRISE LUXURY - USD 95.00`;
+            }
+            return 'INVALID CAR AVAILABILITY FORMAT';
+        }
+
+        // CG - Car Codes
+        if (cmd === 'CG') {
+            return `CAR CODES\n\nCATEGORY CODES:\nE - ECONOMY\nC - COMPACT\nI - INTERMEDIATE\nS - STANDARD\nF - FULL SIZE\nL - LUXURY\n\nTRANSMISSION:\nM - MANUAL\nA - AUTOMATIC`;
+        }
+
+        // CL - Car Location
+        if (cmd.startsWith('CL')) {
+            const location = cmd.substring(2) || 'NYC';
+            return `CAR LOCATIONS - ${location}\n\nHERTZ - 123 MAIN ST\nAVIS - 456 BROADWAY\nBUDGET - 789 FIFTH AVE\nENTERPRISE - 321 PARK AVE`;
+        }
+
+        return 'INVALID CAR COMMAND';
+    },
+
+    // Date/Time command handlers
+    handleDateTime: function(cmd) {
+        if (cmd === 'DD') {
+            return `CURRENT SYSTEM TIME\n${this.getCurrentDateTime()}`;
+        }
+
+        // DD with date
+        const dateMatch = cmd.match(/^DD(\d{1,2})(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(\d{2})?/);
+        if (dateMatch) {
+            const [, day, month, year] = dateMatch;
+            const fullYear = year ? `20${year}` : new Date().getFullYear();
+            const date = new Date(`${month} ${day}, ${fullYear}`);
+            const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+            return `${day}${month}${year || ''} - ${dayName}`;
+        }
+
+        // DD with city
+        const cityMatch = cmd.match(/^DD([A-Z]{3})$/);
+        if (cityMatch) {
+            const city = cityMatch[1];
+            const cityTime = new Date().toLocaleTimeString();
+            return `LOCAL TIME IN ${city}: ${cityTime}`;
+        }
+
+        return 'INVALID DATE/TIME COMMAND';
+    },
+
+    // Profile command handlers
+    handleProfile: function(cmd) {
+        if (!this.state.signedIn) {
+            return 'SIGN-IN REQUIRED';
+        }
+
+        // Basic profile commands
+        if (cmd.startsWith('PA/')) {
+            const profileName = cmd.substring(3);
+            return `PROFILE CREATED - ${profileName}`;
+        }
+
+        if (cmd.startsWith('PD')) {
+            return `PROFILE DISPLAY\nNAME: JOHN SMITH\nCOMPANY: AMADEUS\nPREF AIRLINE: AF\nPREF CLASS: Y`;
+        }
+
+        return 'INVALID PROFILE COMMAND';
+    },
+
+    // Remark command handlers
+    handleRemark: function(cmd) {
+        if (!this.state.signedIn || !this.state.currentPNR) {
+            return 'NO PNR IN WORK AREA';
+        }
+
+        // RC - Confidential Remark
+        if (cmd.startsWith('RC ')) {
+            const remarkText = cmd.substring(3);
+            this.state.currentPNR.remarks.push({
+                type: 'RC',
+                value: remarkText,
+                confidential: true
+            });
+            return 'CONFIDENTIAL REMARK ADDED';
+        }
+
+        // RX - Corporate Remark
+        if (cmd.startsWith('RX ')) {
+            const remarkText = cmd.substring(3);
+            this.state.currentPNR.remarks.push({
+                type: 'RX',
+                value: remarkText,
+                corporate: true
+            });
+            return 'CORPORATE REMARK ADDED';
+        }
+
+        // AB - Billing Address
+        if (cmd.startsWith('AB ')) {
+            const address = cmd.substring(3);
+            this.state.currentPNR.contacts.push({
+                type: 'AB',
+                value: address
+            });
+            return 'BILLING ADDRESS ADDED';
+        }
+
+        // AM - Mailing Address
+        if (cmd.startsWith('AM ')) {
+            const address = cmd.substring(3);
+            this.state.currentPNR.contacts.push({
+                type: 'AM',
+                value: address
+            });
+            return 'MAILING ADDRESS ADDED';
+        }
+
+        return 'INVALID REMARK COMMAND';
+    },
+
+    // Timetable command handlers
+    handleTimetable: function(cmd) {
+        if (!this.state.signedIn) {
+            return 'SIGN-IN REQUIRED';
+        }
+
+        // TC - Timetable Change
+        if (cmd.startsWith('TC')) {
+            const cityPair = cmd.substring(2);
+            return `TIMETABLE DISPLAY - ${cityPair}\n\nFLT  DAYS  DEP  ARR\nAF123 1234567 0800 1100\nAF456 1234567 1400 1700\nAF789 1234567 2000 2300`;
+        }
+
+        return 'TIMETABLE DISPLAYED';
+    },
+
+    // Itinerary command handlers
+    handleItinerary: function(cmd) {
+        if (!this.state.signedIn) {
+            return 'SIGN-IN REQUIRED';
+        }
+
+        // IBD - Basic Itinerary Display
+        if (cmd === 'IBD') {
+            if (!this.state.currentPNR) {
+                return 'NO PNR IN WORK AREA';
+            }
+            return this.generateItinerary(this.state.currentPNR, 'basic');
+        }
+
+        // IEP - Extended Itinerary Print
+        if (cmd === 'IEP') {
+            if (!this.state.currentPNR) {
+                return 'NO PNR IN WORK AREA';
+            }
+            return this.generateItinerary(this.state.currentPNR, 'extended');
+        }
+
+        return 'INVALID ITINERARY COMMAND';
+    },
+
+    // Insurance command handlers
+    handleInsurance: function(cmd) {
+        if (!this.state.signedIn) {
+            return 'SIGN-IN REQUIRED';
+        }
+
+        if (cmd.startsWith('IS')) {
+            return `INSURANCE INFORMATIVE PRICING\n\nTRAVEL GUARD BASIC - USD 25.00\nALLIANZ PREMIUM - USD 45.00\nAXA COMPREHENSIVE - USD 65.00`;
+        }
+
+        return 'INVALID INSURANCE COMMAND';
+    },
+
+    // EMD command handlers
+    handleEMD: function(cmd) {
+        if (!this.state.signedIn) {
+            return 'SIGN-IN REQUIRED';
+        }
+
+        // EWD - Display EMD
+        if (cmd === 'EWD') {
+            return 'NO EMD RECORDS FOUND';
+        }
+
+        // TTM - Issue EMD
+        if (cmd === 'TTM') {
+            const emdNumber = '125-' + Math.floor(Math.random() * 10000000000);
+            return `EMD ISSUED\nDOCUMENT NUMBER: ${emdNumber}`;
+        }
+
+        return 'INVALID EMD COMMAND';
+    },
+
+    // Miscellaneous command handlers
+    handleMisc: function(cmd) {
+        if (!this.state.signedIn) {
+            return 'SIGN-IN REQUIRED';
+        }
+
+        // BA - Amadeus Interface Record
+        if (cmd === 'BA') {
+            return 'AIR TRANSMISSION STARTED';
+        }
+
+        // BR - Retransmit AIR
+        if (cmd === 'BR') {
+            return 'AIR RETRANSMISSION COMPLETED';
+        }
+
+        // BP - Boarding Pass
+        if (cmd === 'BP') {
+            return 'BOARDING PASS ISSUED';
+        }
+
+        // Various utility commands
+        switch (cmd) {
+            case 'WRA': return 'PRINT REQUEST SENT';
+            case 'LP': return 'PNR LIST DISPLAYED';
+            case 'LG': return 'GROUP PNR LIST DISPLAYED';
+            case 'FF': return 'FREQUENT FLYER PROCESSED';
+            case 'GM': return 'GROUP MANAGEMENT';
+            case 'BT': return 'BATCH TRANSACTION';
+            case 'UV': return 'UTILITIES MENU';
+            case 'VF': return 'VERIFY FUNCTION';
+            case 'ZZ': return 'SYSTEM FUNCTION';
+            default: return 'FUNCTION PROCESSED';
+        }
+    },
+
+    // Generate itinerary
+    generateItinerary: function(pnr, type) {
+        let result = `${type.toUpperCase()} ITINERARY\n`;
+        result += `LOCATOR: ${pnr.locator}\n`;
+        result += `CREATED: ${pnr.created}\n\n`;
+
+        if (pnr.passengers.length > 0) {
+            result += 'PASSENGERS:\n';
+            pnr.passengers.forEach((pax, i) => {
+                result += `${i + 1}. ${pax.name}\n`;
+            });
+            result += '\n';
+        }
+
+        if (pnr.segments.length > 0) {
+            result += 'FLIGHT DETAILS:\n';
+            pnr.segments.forEach(seg => {
+                result += `${seg.airline} ${seg.flight} - ${seg.date}\n`;
+                result += `${seg.route.substring(0,3)} TO ${seg.route.substring(3,6)}\n`;
+                result += `DEPART: ${seg.dep} ARRIVE: ${seg.arr}\n`;
+                result += `CLASS: ${seg.class} STATUS: ${seg.status}\n\n`;
+            });
+        }
+
+        if (type === 'extended' && pnr.contacts.length > 0) {
+            result += 'CONTACT INFORMATION:\n';
+            pnr.contacts.forEach(contact => {
+                result += `${contact.type}: ${contact.value}\n`;
+            });
+        }
+
+        return result;
+    },
+
     // Scroll handlers
     handleScroll: function(cmd) {
         switch (cmd) {
@@ -982,11 +1475,59 @@ QS50C1 - Enter queue`;
         const topics = {
             'NEWS': 'AMADEUS SYSTEM NEWS\n- NO NEW ANNOUNCEMENTS',
             'AIS': 'AMADEUS INFORMATION SYSTEM\n- MAIN MENU AVAILABLE',
-            'WEA LON': DATA.weather.LON || 'WEATHER DATA NOT AVAILABLE',
-            'WEA NYC': DATA.weather.NYC || 'WEATHER DATA NOT AVAILABLE',
-            'WEA PAR': DATA.weather.PAR || 'WEATHER DATA NOT AVAILABLE',
-            'WEA DEL': DATA.weather.DEL || 'WEATHER DATA NOT AVAILABLE',
-            'WEA BOM': DATA.weather.BOM || 'WEATHER DATA NOT AVAILABLE'
+            'CODES': `AMADEUS CODES REFERENCE
+
+COUNTRY CODES:
+PK - PAKISTAN          IN - INDIA
+US - UNITED STATES     GB - UNITED KINGDOM
+FR - FRANCE           DE - GERMANY
+AE - UAE              QA - QATAR
+
+AIRLINE CODES:
+EK - EMIRATES         QR - QATAR AIRWAYS
+AI - AIR INDIA        BA - BRITISH AIRWAYS
+LH - LUFTHANSA        AF - AIR FRANCE
+TK - TURKISH AIRLINES SQ - SINGAPORE AIRLINES
+
+CITY CODES:
+KHI - KARACHI/PK      LHE - LAHORE/PK
+ISB - ISLAMABAD/PK    PEW - PESHAWAR/PK
+DEL - NEW DELHI/IN    BOM - MUMBAI/IN
+DXB - DUBAI/AE        DOH - DOHA/QA
+LON - LONDON/GB       PAR - PARIS/FR
+NYC - NEW YORK/US     FRA - FRANKFURT/DE`,
+            'COUPK': `COUNTRY INFORMATION - PAKISTAN
+
+COUNTRY: PAKISTAN
+CODE: PK
+CAPITAL: ISLAMABAD (ISB)
+CURRENCY: PKR - PAKISTANI RUPEE
+TIME ZONE: GMT+5
+MAJOR CITIES:
+  KHI - KARACHI
+  LHE - LAHORE  
+  ISB - ISLAMABAD
+  PEW - PESHAWAR
+  FSD - FAISALABAD
+  MLT - MULTAN
+
+AIRLINES:
+  PK - PAKISTAN INTERNATIONAL
+  ER - SERENE AIR
+  PA - AIRBLUE
+
+INTERNATIONAL GATEWAYS:
+  KARACHI (KHI)
+  LAHORE (LHE)
+  ISLAMABAD (ISB)`,
+            'WEA LON': DATA.weather.LON || 'LONDON WEATHER\nTEMP: 15C\nCOND: PARTLY CLOUDY\nWIND: 10KM/H W',
+            'WEA NYC': DATA.weather.NYC || 'NEW YORK WEATHER\nTEMP: 18C\nCOND: SUNNY\nWIND: 12KM/H SW',
+            'WEA PAR': DATA.weather.PAR || 'PARIS WEATHER\nTEMP: 14C\nCOND: OVERCAST\nWIND: 8KM/H NW',
+            'WEA DEL': DATA.weather.DEL || 'DELHI WEATHER\nTEMP: 32C\nCOND: CLEAR\nWIND: 5KM/H E',
+            'WEA BOM': DATA.weather.BOM || 'MUMBAI WEATHER\nTEMP: 29C\nCOND: HUMID\nWIND: 15KM/H SW',
+            'WEA KHI': 'KARACHI WEATHER\nTEMP: 28C\nCOND: CLEAR\nWIND: 10KM/H S',
+            'WEA DOH': 'DOHA WEATHER\nTEMP: 35C\nCOND: SUNNY\nWIND: 8KM/H N',
+            'WEA DXB': 'DUBAI WEATHER\nTEMP: 38C\nCOND: SUNNY\nWIND: 12KM/H NE'
         };
 
         return topics[topic] || 'INFORMATION NOT AVAILABLE FOR: ' + topic;

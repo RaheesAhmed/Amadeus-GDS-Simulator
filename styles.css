@@ -23,11 +23,13 @@ body {
 #output {
     flex: 1;
     padding: 8px;
-    white-space: pre-line;
+    white-space: pre;
     overflow-y: auto;
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.2;
     color: #ffffff;
+    font-weight: normal;
+    letter-spacing: 0.5px;
 }
 
 #input-line {
@@ -46,7 +48,12 @@ body {
 }
 
 #output::-webkit-scrollbar-thumb {
-    background: #ffffff;
+    background: #555555;
+    border-radius: 3px;
+}
+
+#output::-webkit-scrollbar-thumb:hover {
+    background: #777777;
 }
 
 #prompt {

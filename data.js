@@ -24,7 +24,8 @@ const DATA = {
         'G8': 'GO AIR',
         'IB': 'IBERIA',
         'LX': 'SWISS',
-        'OS': 'AUSTRIAN'
+        'OS': 'AUSTRIAN',
+        'PIA': 'PAK INTERNATIONAL'
     },
 
     // Countries - comprehensive list
@@ -264,19 +265,22 @@ const DATA = {
         'SX': 'SIXT'
     },
 
-    // Sample flight schedules
+    // Enhanced flight schedules for authentic Amadeus display
     flights: {
         generateFlights: function(origin, destination, date) {
             const flights = [];
-            const airlines = ['AI', 'BA', 'LH', 'AF', 'KL', 'EK', 'QR', 'TK'];
-            const aircraft = ['B737', 'A320', 'B777', 'A330', 'B787'];
+            const airlines = this.getRouteAirlines(origin, destination);
+            const aircraft = ['A320', 'A321', 'A330', 'B737', 'B738', 'B777', 'B787', 'E90', 'ATR'];
             
-            for (let i = 0; i < 8; i++) {
+            // Generate realistic flight times based on route
+            const baseTimes = this.getRealisticFlightTimes(origin, destination);
+            
+            for (let i = 0; i < Math.min(10, baseTimes.length); i++) {
                 const airline = airlines[Math.floor(Math.random() * airlines.length)];
-                const flightNum = Math.floor(Math.random() * 999) + 100;
+                const flightNum = this.generateRealisticFlightNumber(airline);
                 const aircraft_type = aircraft[Math.floor(Math.random() * aircraft.length)];
-                const depTime = String(600 + (i * 150)).padStart(4, '0');
-                const arrTime = String(parseInt(depTime) + 280 + (Math.floor(Math.random() * 200))).padStart(4, '0');
+                const depTime = baseTimes[i];
+                const arrTime = this.calculateRealisticArrival(depTime, origin, destination);
                 const avail = Math.floor(Math.random() * 9) + 1;
                 
                 flights.push({
@@ -293,6 +297,110 @@ const DATA = {
                 });
             }
             return flights;
+        },
+
+        // Get realistic airlines for specific routes
+        getRouteAirlines: function(origin, destination) {
+            const routeAirlines = {
+                'DXBLON': ['EK', 'BA', 'VS'],
+                'LONDXB': ['EK', 'BA', 'VS'],
+                'DELLON': ['AI', 'BA', 'VS', '6E'],
+                'LONDEL': ['AI', 'BA', 'VS', '6E'],
+                'BOMLON': ['AI', 'BA', 'VS', '9W'],
+                'LONBOM': ['AI', 'BA', 'VS', '9W'],
+                'KHIDXB': ['EK', 'PK', 'G9'],
+                'DXBKHI': ['EK', 'PK', 'G9'],
+                'LHEKHI': ['PK', 'AI', 'EK'],
+                'KHILHE': ['PK', 'AI', 'EK'],
+                'ISBKHI': ['PK', 'AI'],
+                'KHIISB': ['PK', 'AI'],
+                'DELBOM': ['AI', '6E', 'UK', 'SG', 'G8'],
+                'BOMDEL': ['AI', '6E', 'UK', 'SG', 'G8']
+            };
+            
+            const route = origin + destination;
+            return routeAirlines[route] || ['AI', 'EK', 'BA', 'LH', 'AF', 'KL', 'TK', 'QR'];
+        },
+
+        // Generate realistic flight times for routes
+        getRealisticFlightTimes: function(origin, destination) {
+            const routeTimes = {
+                'DXBLON': ['0200', '0310', '0740', '0745', '0815', '0840', '1210', '1425', '1430', '1820'],
+                'LONDXB': ['0640', '1140', '1350', '1610', '1825', '2130'],
+                'DELLON': ['0130', '0230', '0930', '1345', '1545', '2015'],
+                'BOMLON': ['0145', '0315', '0945', '1400', '1600', '2030'],
+                'KHIDXB': ['0130', '0300', '0545', '0930', '1215', '1500', '1745', '2030'],
+                'LHEKHI': ['0200', '0430', '0700', '1030', '1300', '1530', '1800', '2130'],
+                'DELBOM': ['0600', '0800', '1000', '1200', '1400', '1600', '1800', '2000', '2200'],
+                'DEFAULT': ['0600', '0900', '1200', '1500', '1800', '2100']
+            };
+            
+            const route = origin + destination;
+            return routeTimes[route] || routeTimes['DEFAULT'];
+        },
+
+        // Generate realistic flight numbers by airline
+        generateRealisticFlightNumber: function(airline) {
+            const ranges = {
+                'EK': [1, 999],
+                'AI': [100, 999],
+                'BA': [1, 999],
+                'VS': [1, 99],
+                '6E': [1000, 6999],
+                'UK': [900, 999],
+                'SG': [1, 999],
+                'G8': [100, 399],
+                '9W': [100, 799],
+                'PK': [200, 899],
+                'QR': [1, 999],
+                'TK': [1, 999],
+                'LH': [400, 799],
+                'AF': [1, 999],
+                'KL': [1, 999]
+            };
+            
+            const range = ranges[airline] || [100, 999];
+            return Math.floor(Math.random() * (range[1] - range[0])) + range[0];
+        },
+
+        // Calculate realistic arrival times based on route
+        calculateRealisticArrival: function(depTime, origin, destination) {
+            const flightDurations = {
+                'DXBLON': 7 * 60 + 30,  // 7.5 hours
+                'LONDXB': 7 * 60 + 45,  // 7.75 hours
+                'DELLON': 8 * 60 + 45,  // 8.75 hours
+                'LONDEL': 8 * 60 + 30,  // 8.5 hours
+                'BOMLON': 9 * 60 + 15,  // 9.25 hours
+                'LONBOM': 8 * 60 + 45,  // 8.75 hours
+                'KHIDXB': 2 * 60 + 30,  // 2.5 hours
+                'DXBKHI': 2 * 60 + 15,  // 2.25 hours
+                'LHEKHI': 1 * 60 + 30,  // 1.5 hours
+                'KHILHE': 1 * 60 + 30,  // 1.5 hours
+                'ISBKHI': 1 * 60 + 45,  // 1.75 hours
+                'KHIISB': 1 * 60 + 45,  // 1.75 hours
+                'DELBOM': 2 * 60 + 15,  // 2.25 hours
+                'BOMDEL': 2 * 60 + 15,  // 2.25 hours
+                'DEFAULT': 5 * 60       // 5 hours default
+            };
+            
+            const route = origin + destination;
+            const duration = flightDurations[route] || flightDurations['DEFAULT'];
+            
+            const depHour = parseInt(depTime.substring(0, 2));
+            const depMin = parseInt(depTime.substring(2));
+            const depTotalMin = depHour * 60 + depMin;
+            
+            let arrTotalMin = depTotalMin + duration;
+            
+            // Handle day rollover
+            if (arrTotalMin >= 24 * 60) {
+                arrTotalMin -= 24 * 60;
+            }
+            
+            const arrHour = Math.floor(arrTotalMin / 60);
+            const arrMin = arrTotalMin % 60;
+            
+            return arrHour.toString().padStart(2, '0') + arrMin.toString().padStart(2, '0');
         }
     },
 
@@ -413,21 +521,87 @@ const DATA = {
         schedule_change: 5
     },
 
-    // SSR codes (Special Service Requests)
+    // SSR codes (Special Service Requests) - Complete Amadeus List
     ssr_codes: {
-        'VGML': 'VEGETARIAN MEAL',
-        'NVML': 'NON-VEGETARIAN MEAL',
-        'AVML': 'ASIAN VEGETARIAN MEAL',
-        'HNML': 'HINDU MEAL',
-        'JNML': 'JAIN MEAL',
-        'MOML': 'MOSLEM MEAL',
-        'WCHR': 'WHEELCHAIR REQUIRED',
-        'WCHC': 'WHEELCHAIR - CABIN SEAT',
+        // Meal Codes
+        'AVML': 'VEGETARIAN HINDU MEAL',
+        'BBML': 'BABY MEAL',
+        'BLML': 'BLAND MEAL',
+        'CHML': 'CHILD MEAL',
+        'DBML': 'DIABETIC MEAL',
+        'FPML': 'FRUIT PLATTER MEAL',
+        'GFML': 'GLUTEN FREE MEAL',
+        'HNML': 'HINDU NON-VEGETARIAN MEAL',
+        'JPML': 'JAPANESE MEAL',
+        'KSML': 'KOSHER MEAL',
+        'LCML': 'LOW CALORIE MEAL',
+        'LFML': 'LOW FAT MEAL',
+        'LSML': 'LOW SALT MEAL',
+        'MOML': 'MUSLIM MEAL',
+        'NLML': 'NO LACTOSE MEAL',
+        'ORML': 'ORIENTAL MEAL',
+        'PRML': 'LOW PROTEIN MEAL',
+        'RVML': 'VEGETARIAN RAW MEAL',
+        'SFML': 'SEAFOOD MEAL',
+        'SPML': 'SPECIAL MEAL (SPECIFY)',
+        'VGML': 'VEGETARIAN VEGAN MEAL',
+        'VJML': 'VEGETARIAN JAIN MEAL',
+        'VLML': 'VEGETARIAN LACTO-OVO MEAL',
+        'VOML': 'VEGETARIAN ORIENTAL MEAL',
+        
+        // Wheelchair Assistance
+        'WCHR': 'WHEELCHAIR FOR RAMP',
+        'WCHC': 'WHEELCHAIR ALL WAY TO SEAT',
+        'WCHS': 'WHEELCHAIR UP/DOWN STEPS',
+        'WCBW': 'WHEELCHAIR WET CELL BATTERY',
+        'WCBD': 'WHEELCHAIR DRY CELL BATTERY',
+        'WCMP': 'WHEELCHAIR MANUAL POWER',
+        'WCOB': 'WHEELCHAIR ON BOARD',
+        
+        // Passenger Assistance
+        'BLND': 'BLIND PASSENGER',
         'DEAF': 'DEAF PASSENGER',
-        'BLIND': 'BLIND PASSENGER',
-        'PETC': 'PET IN CABIN',
+        'DPNA': 'DISABLED PASSENGER ASSISTANCE',
+        'MEDA': 'MEDICAL CASE',
+        'STCR': 'STRETCHER PASSENGER',
+        'UMNR': 'UNACCOMPANIED MINOR',
+        
+        // Special Equipment/Services
         'AVIH': 'ANIMAL IN HOLD',
-        'UMNR': 'UNACCOMPANIED MINOR'
+        'PETC': 'PET IN CABIN',
+        'BSCT': 'BASSINET/CARRY COT',
+        'CBBG': 'CABIN BAGGAGE',
+        'EXST': 'EXTRA SEAT',
+        'BULK': 'BULKY BAGGAGE',
+        'BIKE': 'BICYCLE',
+        'SPEQ': 'SPORTS EQUIPMENT',
+        'XBAG': 'EXCESS BAGGAGE',
+        
+        // Travel Document/Special Handling
+        'DOCS': 'TRAVEL DOCUMENTS',
+        'DOCO': 'TRAVEL DOCUMENT OTHER',
+        'DOCA': 'DESTINATION ADDRESS',
+        'CTCM': 'CONTACT MOBILE',
+        'CTCE': 'CONTACT EMAIL',
+        'CTCH': 'CONTACT HOME',
+        'CTCR': 'CONTACT RESIDENCE',
+        
+        // Frequent Flyer
+        'FQTV': 'FREQUENT FLYER ACCRUAL',
+        'FQTR': 'FREQUENT FLYER REDEMPTION',
+        'FQTU': 'FREQUENT FLYER UPGRADE',
+        'FQTS': 'FREQUENT FLYER SERVICE',
+        
+        // Special Categories
+        'CHLD': 'CHILD',
+        'INFT': 'INFANT',
+        'GRPF': 'GROUP FARE',
+        'GRPS': 'GROUP PASSENGERS',
+        'TWOV': 'TRANSIT WITHOUT VISA',
+        'DEPU': 'DEPORTEE UNACCOMPANIED',
+        'DEPA': 'DEPORTEE ACCOMPANIED',
+        'COUR': 'COMMERCIAL COURIER',
+        'LANG': 'LANGUAGE SPOKEN'
     },
 
     // Fare rules
