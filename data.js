@@ -25,6 +25,7 @@ const DATA = {
         'IB': 'IBERIA',
         'LX': 'SWISS',
         'OS': 'AUSTRIAN',
+        'PR': 'PHILIPPINE AIRLINES',
         'PIA': 'PAK INTERNATIONAL'
     },
 
